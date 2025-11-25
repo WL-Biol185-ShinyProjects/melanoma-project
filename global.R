@@ -150,7 +150,34 @@ cat("UV breaks (W/m²):", round(us_uv_breaks), "\n")
 cat("Melanoma rate breaks (per 100k):", round(us_melanoma_breaks, 1), "\n")
 cat("Melanoma per white breaks (per 100k white):", round(us_melanoma_per_white_breaks, 1), "\n")
 
-# Calculate US-wide breaks for MD availability
+#_________
+# Load MD availability data FIRST (before using it)
+md_availability <- read.csv("md_availability_cleaned.csv", stringsAsFactors = FALSE)
+
+# Rename the column to use underscores instead of periods
+if ("md_rate_per_100.000" %in% colnames(md_availability)) {
+  md_availability <- md_availability %>%
+    rename(md_rate_per_100k = md_rate_per_100.000)
+}
+
+# Ensure FIPS is properly formatted
+if ("fips_md" %in% colnames(md_availability)) {
+  # FIPS already exists, just format it
+  md_availability$fips_md <- sprintf("%05d", as.numeric(md_availability$fips_md))
+} else {
+  # Need to create FIPS from county/state names
+  md_availability <- md_availability %>%
+    mutate(
+      county_clean = toupper(str_remove(county_md, "\\s+(County|Parish|Borough|Census Area|Municipality|City and Borough|City)$")),
+      state_clean = toupper(trimws(state_md))
+    ) %>%
+    left_join(county_lookup, by = c("county_clean", "state_clean"), 
+              relationship = "many-to-many") %>%
+    rename(fips_md = GEOID) %>%
+    select(-county_clean, -state_clean)
+}
+
+# NOW calculate US-wide breaks for MD availability (data is loaded!)
 us_wide_data_md <- melanoma_table %>%
   left_join(
     md_availability %>% select(fips_md, md_rate_per_100k),
@@ -163,7 +190,6 @@ us_md_breaks <- quantile(us_wide_data_md$md_rate_per_100k,
                          na.rm = TRUE)
 
 cat("MD availability breaks (per 100k):", round(us_md_breaks, 1), "\n")
-
 
 #___________________________________________________________________
 
