@@ -134,6 +134,25 @@ shinyUI(
         br(),
         textOutput("demographics_summary"),
         downloadButton("download_demographics", "Download County Population Data (CSV)"),
+        br(),
+        
+        # MD Availability Table Section
+        h3("MD Availability Data"),
+        p("Explore physician availability data by county:"),
+        reactableOutput("md_table", height = 500),
+        br(),
+        textOutput("md_summary"),
+        downloadButton("download_md", "Download MD Availability Data (CSV)"),
+        br(),
+        br(),
+        
+        # Occupation Data Table Section
+        h3("Occupation Data"),
+        p("Explore outdoor occupation data by county:"),
+        reactableOutput("occupation_table", height = 500),
+        br(),
+        textOutput("occupation_summary"),
+        downloadButton("download_occupation", "Download Occupation Data (CSV)"),
         br()
       )
     ),
@@ -298,6 +317,60 @@ shinyUI(
         br(),
         br()
       )
-    )
+      
+      
+    ),
+    
+    # About Us tab
+    tabPanel(
+      "About Us",
+      fluidPage(
+        h2("About Us", style = "text-align: center; margin-bottom: 40px;"),
+        
+        # Centered container for photos
+        fluidRow(
+          column(12, align = "center",
+                 # Dylan's photo
+                 column(6, align = "center",
+                        tags$img(src = "dylan.jpg", width = "200px", height = "200px",
+                                 style = "border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); margin-bottom: 15px; object-fit: cover;"),
+                        h3("Dylan Reher", style = paste0("color: ", dark_blue, "; margin-top: 15px;"))
+                 ),
+                 # Patrick's photo
+                 column(6, align = "center",
+                        tags$img(src = "patrick.jpg", width = "200px", height = "200px",
+                                 style = "border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); margin-bottom: 15px; object-fit: cover;"),
+                        h3("Patrick Murphy", style = paste0("color: ", dark_blue, "; margin-top: 15px;"))
+                 )
+          )
+        ),
+        
+        br(),
+        br(),
+        
+        # Bio section spanning full width
+        fluidRow(
+          column(12,
+                 wellPanel(
+                   style = "padding: 30px; background-color: white; border-radius: 10px;",
+                   h3("Our Story", style = paste0("color: ", royal_blue, "; margin-bottom: 20px;")),
+                   p("[Write your bio here - tell us about your background, what inspired this project, 
+            your interest in melanoma research, what you learned during this project, and any 
+            future plans or applications for this work. You can include information about your 
+            academic interests, research goals, or how this project fits into your broader studies.]",
+                     style = "font-size: 16px; line-height: 1.8; color: #333;"),
+                   
+                   br(),
+                   
+                   h3("Project Motivation", style = paste0("color: ", royal_blue, "; margin-bottom: 20px;")),
+                   p("[Explain what motivated you to explore melanoma data visualization, why you chose 
+            these specific datasets, and what you hoped to discover or demonstrate through your 
+            statistical analysis and mapping work.]",
+                     style = "font-size: 16px; line-height: 1.8; color: #333;")
+                 )
+          )
+        )
+      )
+    ),
   )
 )

@@ -842,7 +842,57 @@ shinyServer(function(input, output, session) {
     }
   )
   
+  # MD Availability table
+  output$md_table <- renderReactable({
+    req(md_availability)
+    reactable(
+      md_availability,
+      searchable = TRUE,
+      filterable = TRUE,
+      sortable = TRUE,
+      pagination = TRUE,
+      defaultPageSize = 10
+    )
+  })
   
+  output$md_summary <- renderText({
+    paste0("Rows: ", nrow(md_availability), " | Columns: ", ncol(md_availability))
+  })
+  
+  output$download_md <- downloadHandler(
+    filename = function() {
+      "md_availability_cleaned.csv"
+    },
+    content = function(file) {
+      write.csv(md_availability, file, row.names = FALSE)
+    }
+  )
+  
+  # Occupation data table
+  output$occupation_table <- renderReactable({
+    req(occupation_data)
+    reactable(
+      occupation_data,
+      searchable = TRUE,
+      filterable = TRUE,
+      sortable = TRUE,
+      pagination = TRUE,
+      defaultPageSize = 10
+    )
+  })
+  
+  output$occupation_summary <- renderText({
+    paste0("Rows: ", nrow(occupation_data), " | Columns: ", ncol(occupation_data))
+  })
+  
+  output$download_occupation <- downloadHandler(
+    filename = function() {
+      "occupation_data.csv"
+    },
+    content = function(file) {
+      write.csv(occupation_data, file, row.names = FALSE)
+    }
+  )
   
   # ============================================================================
   # NEW IMPROVED STATISTICAL ANALYSIS TAB
