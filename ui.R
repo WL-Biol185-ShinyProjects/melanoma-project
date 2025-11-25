@@ -989,7 +989,7 @@ shinyUI(
         # Bio sections
         div(class = "bio-section",
             h3("Our Story"),
-            p("We are students in BIOL-185 at [Your University]. This project represents our exploration 
+            p("We are students in BIOL-185 at Washington and Lee University. This project represents our exploration 
               of the relationship between environmental factors and melanoma incidence across the United States. 
               Through this dashboard, we aimed to combine our interests in data science, public health, and 
               biology to create a meaningful visualization tool.")
