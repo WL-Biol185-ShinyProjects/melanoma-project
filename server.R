@@ -70,7 +70,7 @@ shinyServer(function(input, output, session) {
     tagList(
       div(
         class = "state-badge",
-        HTML(paste0("📍 ", input$state_select))
+        HTML(paste0(input$state_select))
       ),
       div(
         class = "quick-stats",
@@ -99,7 +99,7 @@ shinyServer(function(input, output, session) {
   # BIVARIATE COLOR FUNCTIONS (using US-wide breaks from global.R)
   # ============================================================================
   
-  # Standard Bivariate: UV × Melanoma Rate (no demographic adjustment)
+  # Standard Bivariate: UV x Melanoma Rate (no demographic adjustment)
   create_bivariate_colors <- function(uv_values, melanoma_values) {
     
     # Use US-wide breaks (calculated in global.R)
@@ -126,7 +126,7 @@ shinyServer(function(input, output, session) {
     return(colors)
   }
   
-  # Risk-Adjusted Bivariate: UV × Melanoma per White Population
+  # Risk-Adjusted Bivariate: UV x Melanoma per White Population
   create_weighted_bivariate_colors <- function(uv_values, melanoma_values, white_pct) {
     
     # Calculate melanoma rate PER WHITE POPULATION
@@ -156,7 +156,8 @@ shinyServer(function(input, output, session) {
     
     return(colors)
   }
-  # Healthcare Access Bivariate: MD Availability × Melanoma Rate
+  
+  # Healthcare Access Bivariate: MD Availability x Melanoma Rate
   create_md_bivariate_colors <- function(md_values, melanoma_values) {
     
     # Use US-wide breaks (calculated in global.R)
@@ -247,7 +248,7 @@ shinyServer(function(input, output, session) {
           is.na(avg_annual_ct),
           paste0(NAME, " County: No data available"),
           paste0(NAME, " County: ", 
-                 ifelse(avg_annual_ct == 0, "≤3", as.character(avg_annual_ct)), 
+                 ifelse(avg_annual_ct == 0, "<=3", as.character(avg_annual_ct)), 
                  " cases/year")
         ),
         highlightOptions = highlightOptions(
@@ -273,7 +274,7 @@ shinyServer(function(input, output, session) {
       HTML("<div style='padding: 15px; background-color: white; border: 1px solid #4169E1; border-radius: 8px; margin-top: 10px;'>
          <strong>About Melanoma Cases by County:</strong><br>
          This map displays the average annual count of invasive melanoma cases for each county from 2017-2021. 
-         Values of 0 indicate suppressed data (≤3 cases). Data source: National Cancer Institute.
+         Values of 0 indicate suppressed data (<=3 cases). Data source: National Cancer Institute.
        </div>")
     } else if (choice == "rate") {
       HTML("<div style='padding: 15px; background-color: white; border: 1px solid #4169E1; border-radius: 8px; margin-top: 10px;'>
@@ -284,13 +285,13 @@ shinyServer(function(input, output, session) {
     } else if (choice == "uv") {
       HTML("<div style='padding: 15px; background-color: white; border: 1px solid #4169E1; border-radius: 8px; margin-top: 10px;'>
          <strong>About UV Measurement:</strong><br>
-         This map displays average UV intensity measured in Watts per square meter (W/m²) for each county from 2020-2024. 
+         This map displays average UV intensity measured in Watts per square meter (W/m2) for each county from 2020-2024. 
          Higher values indicate greater UV radiation exposure. Data source: National Institute for Cancer GIS Portal.
        </div>")
     } else if (choice == "bivariate") {
       HTML("<div style='padding: 15px; background-color: white; border: 1px solid #E65100; border-radius: 8px; margin-top: 10px;'>
          <strong>About Bivariate Mapping:</strong><br>
-         This map shows the relationship between UV exposure and melanoma rates simultaneously using a 3×3 color scheme.
+         This map shows the relationship between UV exposure and melanoma rates simultaneously using a 3x3 color scheme.
          Counties are classified relative to <strong>national averages</strong>, not just within the selected state.
          Counties in the top-right corner (dark blue/purple) have both high UV and high melanoma rates compared to the entire US.
          <em>Note: This map does not account for population demographics.</em>
@@ -299,7 +300,7 @@ shinyServer(function(input, output, session) {
       HTML("<div style='padding: 15px; background-color: white; border: 1px solid #E65100; border-radius: 8px; margin-top: 10px;'>
        <strong>About Risk-Adjusted Bivariate Mapping:</strong><br>
        This advanced map calculates melanoma rates <strong>per white (non-Hispanic) population</strong>, since melanoma 
-       affects white populations 20-30× more than other racial groups. Counties are classified relative to <strong>national rates</strong>.
+       affects white populations 20-30x more than other racial groups. Counties are classified relative to <strong>national rates</strong>.
        <br><br>
        <strong>Why this matters:</strong> The displayed <strong>Rate per 100k White</strong> shows the melanoma burden 
        specifically within the at-risk population. A county with 30 cases per 100k total population and only 30% white 
@@ -325,7 +326,7 @@ shinyServer(function(input, output, session) {
     } else if (choice == "bivariate_md") {
       HTML("<div style='padding: 15px; background-color: white; border: 1px solid #E65100; border-radius: 8px; margin-top: 10px;'>
          <strong>About Healthcare Access Bivariate Mapping:</strong><br>
-         This map shows the relationship between physician availability and melanoma rates using a 3×3 color scheme.
+         This map shows the relationship between physician availability and melanoma rates using a 3x3 color scheme.
          Counties are classified relative to <strong>national averages</strong>.
          <br><br>
          <strong>Interpretation:</strong>
@@ -418,7 +419,7 @@ shinyServer(function(input, output, session) {
             is.na(avg_annual_ct),
             paste0(NAME, " County: No data available"),
             paste0(NAME, " County: ", 
-                   ifelse(avg_annual_ct == 0, "≤3", as.character(avg_annual_ct)), 
+                   ifelse(avg_annual_ct == 0, "<=3", as.character(avg_annual_ct)), 
                    " cases/year")
           ),
           highlightOptions = highlightOptions(
@@ -500,7 +501,7 @@ shinyServer(function(input, output, session) {
           label = ~ifelse(
             is.na(uv_value),
             paste0(NAME, " County: No UV data available"),
-            paste0(NAME, " County: ", round(uv_value, 1), " W/m²")
+            paste0(NAME, " County: ", round(uv_value, 1), " W/m2")
           ),
           highlightOptions = highlightOptions(
             weight = 2, color = "#665", fillOpacity = 0.9, bringToFront = TRUE
@@ -509,12 +510,12 @@ shinyServer(function(input, output, session) {
         addLegend(
           position = "bottomright", pal = pal,
           values = counties_with_data$uv_value,
-          title = "UV Intensity<br>(W/m²)",
+          title = "UV Intensity<br>(W/m2)",
           opacity = 0.7, layerId = "melanoma_legend"
         )
     }
     
-    # ========== BIVARIATE: UV × MELANOMA RATE ==========
+    # ========== BIVARIATE: UV x MELANOMA RATE ==========
     if (view_val == "bivariate") {
       
       counties_with_data <- state_counties %>%
@@ -547,7 +548,7 @@ shinyServer(function(input, output, session) {
           layerId = ~GEOID, fillOpacity = 0.7, group = "melanoma",
           label = ~paste0(
             NAME, " County",
-            "<br>UV: ", ifelse(is.na(uv_value), "No data", paste0(round(uv_value, 1), " W/m²")),
+            "<br>UV: ", ifelse(is.na(uv_value), "No data", paste0(round(uv_value, 1), " W/m2")),
             "<br>Melanoma: ", ifelse(is.na(age_adj_inc_rate), "Suppressed", 
                                      paste0(round(age_adj_inc_rate, 1), " per 100k"))
           ) %>% lapply(htmltools::HTML),
@@ -557,14 +558,14 @@ shinyServer(function(input, output, session) {
         ) %>%
         addControl(
           html = '<div style="background: white; padding: 12px; border: 2px solid #E65100; border-radius: 5px;">
-              <strong style="font-size: 13px;">UV × Melanoma Rate</strong><br>
+              <strong style="font-size: 13px;">UV x Melanoma Rate</strong><br>
               <p style="font-size: 10px; margin: 5px 0;">(National scale)</p>
               <table style="border-collapse: collapse; margin-top: 8px;">
                 <tr>
                   <td style="width:28px;height:28px;background:#BE64AC;border:1px solid white"></td>
                   <td style="width:28px;height:28px;background:#8C62AA;border:1px solid white"></td>
                   <td style="width:28px;height:28px;background:#3B4994;border:1px solid white"></td>
-                  <td rowspan="3" style="writing-mode: vertical-lr; transform: rotate(180deg); padding-left:8px; font-size:11px;">Higher Melanoma →</td>
+                  <td rowspan="3" style="writing-mode: vertical-lr; transform: rotate(180deg); padding-left:8px; font-size:11px;">Higher Melanoma</td>
                 </tr>
                 <tr>
                   <td style="width:28px;height:28px;background:#DFBFD8;border:1px solid white"></td>
@@ -577,7 +578,7 @@ shinyServer(function(input, output, session) {
                   <td style="width:28px;height:28px;background:#5AC8C8;border:1px solid white"></td>
                 </tr>
                 <tr>
-                  <td colspan="3" style="text-align:center; padding-top:5px; font-size:11px;">Higher UV →</td>
+                  <td colspan="3" style="text-align:center; padding-top:5px; font-size:11px;">Higher UV</td>
                 </tr>
               </table>
                <p style="font-size: 10px; color: #666; margin-top: 8px;">
@@ -588,7 +589,7 @@ shinyServer(function(input, output, session) {
         )
     }
     
-    # ========== RISK-ADJUSTED BIVARIATE: UV × MELANOMA PER WHITE POP ==========
+    # ========== RISK-ADJUSTED BIVARIATE: UV x MELANOMA PER WHITE POP ==========
     if (view_val == "bivariate_weighted") {
       
       counties_with_data <- state_counties %>%
@@ -630,7 +631,7 @@ shinyServer(function(input, output, session) {
           layerId = ~GEOID, fillOpacity = 0.7, group = "melanoma",
           label = ~paste0(
             NAME, " County",
-            "<br>UV: ", ifelse(is.na(uv_value), "No data", paste0(round(uv_value, 1), " W/m²")),
+            "<br>UV: ", ifelse(is.na(uv_value), "No data", paste0(round(uv_value, 1), " W/m2")),
             "<br>Melanoma Rate: ", ifelse(is.na(age_adj_inc_rate), "Suppressed", 
                                           paste0(round(age_adj_inc_rate, 1), " per 100k total")),
             "<br>White Pop: ", ifelse(is.na(white_not_h_or_l_pct), "No data",
@@ -645,13 +646,13 @@ shinyServer(function(input, output, session) {
         addControl(
           html = '<div style="background: white; padding: 12px; border: 2px solid #E65100; border-radius: 5px;">
               <strong style="font-size: 13px;">Risk-Adjusted Map</strong><br>
-              <p style="font-size: 10px; margin: 5px 0;">UV × Melanoma per white pop (National scale)</p>
+              <p style="font-size: 10px; margin: 5px 0;">UV x Melanoma per white pop (National scale)</p>
               <table style="border-collapse: collapse; margin-top: 8px;">
                 <tr>
                   <td style="width:28px;height:28px;background:#BE64AC;border:1px solid white"></td>
                   <td style="width:28px;height:28px;background:#8C62AA;border:1px solid white"></td>
                   <td style="width:28px;height:28px;background:#3B4994;border:1px solid white"></td>
-                  <td rowspan="3" style="writing-mode: vertical-lr; transform: rotate(180deg); padding-left:8px; font-size:11px;">Higher Risk →</td>
+                  <td rowspan="3" style="writing-mode: vertical-lr; transform: rotate(180deg); padding-left:8px; font-size:11px;">Higher Risk</td>
                 </tr>
                 <tr>
                   <td style="width:28px;height:28px;background:#DFBFD8;border:1px solid white"></td>
@@ -664,7 +665,7 @@ shinyServer(function(input, output, session) {
                   <td style="width:28px;height:28px;background:#5AC8C8;border:1px solid white"></td>
                 </tr>
                 <tr>
-                  <td colspan="3" style="text-align:center; padding-top:5px; font-size:11px;">Higher UV →</td>
+                  <td colspan="3" style="text-align:center; padding-top:5px; font-size:11px;">Higher UV</td>
                 </tr>
               </table>
                <p style="font-size: 10px; color: #666; margin-top: 8px;">
@@ -722,7 +723,7 @@ shinyServer(function(input, output, session) {
         )
     }
     
-    # ========== BIVARIATE: MD AVAILABILITY × MELANOMA RATE ==========
+    # ========== BIVARIATE: MD AVAILABILITY x MELANOMA RATE ==========
     if (view_val == "bivariate_md") {
       
       counties_with_data <- state_counties %>%
@@ -762,14 +763,14 @@ shinyServer(function(input, output, session) {
         ) %>%
         addControl(
           html = '<div style="background: white; padding: 12px; border: 2px solid #E65100; border-radius: 5px;">
-              <strong style="font-size: 13px;">MD Access × Melanoma Rate</strong><br>
+              <strong style="font-size: 13px;">MD Access x Melanoma Rate</strong><br>
               <p style="font-size: 10px; margin: 5px 0;">(National scale)</p>
               <table style="border-collapse: collapse; margin-top: 8px;">
                 <tr>
                   <td style="width:28px;height:28px;background:#BE64AC;border:1px solid white"></td>
                   <td style="width:28px;height:28px;background:#8C62AA;border:1px solid white"></td>
                   <td style="width:28px;height:28px;background:#3B4994;border:1px solid white"></td>
-                  <td rowspan="3" style="writing-mode: vertical-lr; transform: rotate(180deg); padding-left:8px; font-size:11px;">Higher Melanoma →</td>
+                  <td rowspan="3" style="writing-mode: vertical-lr; transform: rotate(180deg); padding-left:8px; font-size:11px;">Higher Melanoma</td>
                 </tr>
                 <tr>
                   <td style="width:28px;height:28px;background:#DFBFD8;border:1px solid white"></td>
@@ -782,7 +783,7 @@ shinyServer(function(input, output, session) {
                   <td style="width:28px;height:28px;background:#5AC8C8;border:1px solid white"></td>
                 </tr>
                 <tr>
-                  <td colspan="3" style="text-align:center; padding-top:5px; font-size:11px;">Higher MD Access →</td>
+                  <td colspan="3" style="text-align:center; padding-top:5px; font-size:11px;">Higher MD Access</td>
                 </tr>
               </table>
                <p style="font-size: 10px; color: #666; margin-top: 8px;">
@@ -799,10 +800,8 @@ shinyServer(function(input, output, session) {
   ) # End of observe block
   
   # ============================================================================
-  # DATA EXPLORER TAB - UPDATED VERSION
+  # DATA EXPLORER TAB
   # ============================================================================
-  # Replace your existing DATA EXPLORER TAB section with this code
-  # This removes the X column and adds MD availability table
   
   # Melanoma table - REMOVE X COLUMN
   output$data_table <- renderReactable({
@@ -827,7 +826,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$data_summary <- renderText({
-    paste0(nrow(melanoma_table), " rows × ", ncol(melanoma_table) - 1, " cols")
+    paste0(nrow(melanoma_table), " rows x ", ncol(melanoma_table) - 1, " cols")
   })
   
   output$download_data <- downloadHandler(
@@ -866,7 +865,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$uv_summary <- renderText({
-    paste0(nrow(uv_table), " rows × ", ncol(uv_table) - 1, " cols")
+    paste0(nrow(uv_table), " rows x ", ncol(uv_table) - 1, " cols")
   })
   
   output$download_uv <- downloadHandler(
@@ -904,7 +903,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$demographics_summary <- renderText({
-    paste0(nrow(county_demographics), " rows × ", ncol(county_demographics) - 1, " cols")
+    paste0(nrow(county_demographics), " rows x ", ncol(county_demographics) - 1, " cols")
   })
   
   output$download_demographics <- downloadHandler(
@@ -920,7 +919,7 @@ shinyServer(function(input, output, session) {
     }
   )
   
-  # MD Availability table - NEW
+  # MD Availability table
   output$md_table <- renderReactable({
     req(md_availability)
     display_data <- md_availability
@@ -942,7 +941,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$md_summary <- renderText({
-    paste0(nrow(md_availability), " rows × ", ncol(md_availability) - 1, " cols")
+    paste0(nrow(md_availability), " rows x ", ncol(md_availability) - 1, " cols")
   })
   
   output$download_md <- downloadHandler(
@@ -958,8 +957,42 @@ shinyServer(function(input, output, session) {
     }
   )
   
+  # Occupation data table (NEW from friend)
+  output$occupation_table <- renderReactable({
+    req(occupation_data)
+    display_data <- occupation_data
+    if ("X" %in% colnames(display_data)) {
+      display_data <- display_data[, !colnames(display_data) %in% "X"]
+    }
+    reactable(
+      display_data,
+      searchable = TRUE,
+      filterable = TRUE,
+      sortable = TRUE,
+      pagination = TRUE,
+      defaultPageSize = 10,
+      striped = TRUE,
+      highlight = TRUE,
+      bordered = TRUE,
+      compact = TRUE
+    )
+  })
+  
+  output$occupation_summary <- renderText({
+    paste0(nrow(occupation_data), " rows x ", ncol(occupation_data), " cols")
+  })
+  
+  output$download_occupation <- downloadHandler(
+    filename = function() {
+      "occupation_data.csv"
+    },
+    content = function(file) {
+      write.csv(occupation_data, file, row.names = FALSE)
+    }
+  )
+  
   # ============================================================================
-  # NEW IMPROVED STATISTICAL ANALYSIS TAB
+  # STATISTICAL ANALYSIS TAB
   # ============================================================================
   
   # Prepare analysis data
@@ -1031,7 +1064,7 @@ shinyServer(function(input, output, session) {
     # Create hover text
     data$hover_text <- paste0(
       "<b>", data$county, ", ", data$state, "</b><br>",
-      "UV: ", round(data$uv_value), " W/m²<br>",
+      "UV: ", round(data$uv_value), " W/m2<br>",
       "Melanoma: ", round(data$age_adj_inc_rate, 1), " per 100k<br>",
       "White Pop: ", round(data$white_not_h_or_l_pct, 1), "%"
     )
@@ -1049,7 +1082,7 @@ shinyServer(function(input, output, session) {
                  hovertemplate = '%{text}<extra></extra>') %>%
       layout(
         title = list(text = "<b>UV Exposure vs Melanoma Rate</b>", font = list(size = 18)),
-        xaxis = list(title = "UV Intensity (W/m²)"),
+        xaxis = list(title = "UV Intensity (W/m2)"),
         yaxis = list(title = "Melanoma Rate (per 100k)"),
         plot_bgcolor = "#f8f9fa",
         paper_bgcolor = "white",
@@ -1078,7 +1111,7 @@ shinyServer(function(input, output, session) {
       labs(
         title = "Simpson's Paradox in UV-Melanoma Relationship",
         subtitle = "Overall trend (red dashed) vs. Within-group trends (colored)",
-        x = "UV Intensity (W/m²)",
+        x = "UV Intensity (W/m2)",
         y = "Melanoma Rate (per 100k)"
       ) +
       theme_minimal(base_size = 14) +
@@ -1106,7 +1139,7 @@ shinyServer(function(input, output, session) {
     
     # Create comparison data
     models <- data.frame(
-      Model = c("UV Only", "Demographics Only", "UV + Demographics", "UV × Demographics"),
+      Model = c("UV Only", "Demographics Only", "UV + Demographics", "UV x Demographics"),
       R2 = c(summary(m1)$r.squared, summary(m2)$r.squared, 
              summary(m3)$r.squared, summary(m4)$r.squared) * 100,
       AIC = c(AIC(m1), AIC(m2), AIC(m3), AIC(m4))
@@ -1302,7 +1335,7 @@ shinyServer(function(input, output, session) {
     
     HTML(paste0('
     <div class="insights-container">
-      <h4 style="color: #1976D2; margin-bottom: 20px;"><i class="fa fa-lightbulb"></i> Key Statistical Insights</h4>
+      <h4 style="color: #1976D2; margin-bottom: 20px;">Key Statistical Insights</h4>
       
       <div class="row">
         <div class="col-md-6">
@@ -1310,7 +1343,7 @@ shinyServer(function(input, output, session) {
             <h5 style="color: #1976D2;">UV Exposure Effect</h5>
             <p style="font-size: 24px; font-weight: bold; color: #0D47A1;">+', 
                 round(uv_effect_100, 1), ' cases</p>
-            <p style="color: #666;">per 100 W/m² increase in UV</p>
+            <p style="color: #666;">per 100 W/m2 increase in UV</p>
             <small style="color: #999;">Statistically significant (p < 0.05)</small>
           </div>
         </div>
@@ -1365,7 +1398,7 @@ shinyServer(function(input, output, session) {
     plot(fitted(m), sqrt(abs(standardize(residuals(m)))), 
          main = "3. Equal Variance Check",
          xlab = "Predicted Values", 
-         ylab = "√|Standardized Residuals|",
+         ylab = "Sqrt|Standardized Residuals|",
          pch = 20, col = alpha("#2166AC", 0.5))
     lines(lowess(fitted(m), sqrt(abs(standardize(residuals(m))))), 
           col = "red", lwd = 2)
@@ -1464,7 +1497,7 @@ shinyServer(function(input, output, session) {
     
     # Create coefficient data
     coef_data <- data.frame(
-      Variable = c("UV Intensity\n(per 100 W/m²)", "White Population\n(per 10%)"),
+      Variable = c("UV Intensity\n(per 100 W/m2)", "White Population\n(per 10%)"),
       Coefficient = c(coef(m)[2] * 100, coef(m)[3] * 10),
       StdError = c(coef_summary[2, 2] * 100, coef_summary[3, 2] * 10),
       pValue = coef_summary[2:3, 4]
@@ -1482,7 +1515,7 @@ shinyServer(function(input, output, session) {
       geom_text(aes(label = paste0(round(Coefficient, 2), Significance)), 
                 vjust = -2, size = 6, fontface = "bold") +
       labs(title = "Linear Regression Results",
-           subtitle = paste0("Model R² = ", round(summary(m)$r.squared, 3), 
+           subtitle = paste0("Model R2 = ", round(summary(m)$r.squared, 3), 
                              " | Both predictors highly significant (p < 0.001)"),
            x = "", 
            y = "Effect on Melanoma Rate (cases per 100k)") +
@@ -1496,7 +1529,7 @@ shinyServer(function(input, output, session) {
                size = 4, color = "gray30", fontface = "italic")
   })
   
-  # 10. INTERACTIVE TABLE OF TOP/BOTTOM COUNTIES
+  # 12. INTERACTIVE TABLE OF TOP/BOTTOM COUNTIES
   output$county_table <- renderDT({
     data <- analysis_data()
     m <- lm(age_adj_inc_rate ~ uv_value + white_not_h_or_l_pct, data = data)

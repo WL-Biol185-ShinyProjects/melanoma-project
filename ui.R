@@ -445,6 +445,82 @@ shinyUI(
         border-radius: 6px;
         overflow: hidden;
       }
+      
+      /* ========== ABOUT US TAB STYLING ========== */
+      .about-hero {
+        background: linear-gradient(135deg, ", royal_blue, " 0%, ", dark_blue, " 100%);
+        color: white;
+        padding: 30px 40px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(65, 105, 225, 0.25);
+        text-align: center;
+      }
+      
+      .about-hero h2 {
+        color: white;
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+      }
+      
+      .team-container {
+        display: flex;
+        justify-content: center;
+        gap: 60px;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+      }
+      
+      .team-member {
+        text-align: center;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        border: 1px solid #e0e5ec;
+        min-width: 280px;
+      }
+      
+      .team-member img {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        margin-bottom: 15px;
+        border: 4px solid ", light_blue, ";
+      }
+      
+      .team-member h3 {
+        color: ", dark_blue, ";
+        margin: 10px 0 5px 0;
+        font-size: 22px;
+      }
+      
+      .bio-section {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        border: 1px solid #e0e5ec;
+        margin-bottom: 25px;
+      }
+      
+      .bio-section h3 {
+        color: ", royal_blue, ";
+        margin: 0 0 20px 0;
+        padding-bottom: 12px;
+        border-bottom: 2px solid ", light_blue, ";
+        font-size: 20px;
+      }
+      
+      .bio-section p {
+        font-size: 16px;
+        line-height: 1.8;
+        color: #444;
+        margin: 0;
+      }
     "))),
     
     # ==================== HOME TAB ====================
@@ -501,7 +577,7 @@ shinyUI(
                 ),
                 div(class = "feature-card",
                     h4("UV Intensity Measurement"),
-                    p("See UV radiation intensity (W/m²) by county, with data from the NCI GIS Portal covering 2020-2024.")
+                    p("See UV radiation intensity (W/m2) by county, with data from the NCI GIS Portal covering 2020-2024.")
                 ),
                 div(class = "feature-card",
                     h4("Physician Availability"),
@@ -509,7 +585,7 @@ shinyUI(
                 ),
                 div(class = "feature-card",
                     h4("Bivariate Analysis Maps"),
-                    p("Explore relationships between multiple variables simultaneously using advanced 3×3 color schemes.")
+                    p("Explore relationships between multiple variables simultaneously using advanced 3x3 color schemes.")
                 ),
                 div(class = "feature-card",
                     h4("Statistical Analysis"),
@@ -573,7 +649,7 @@ shinyUI(
                            choices = c(
                              "Melanoma Cases (Count)" = "count",
                              "Melanoma Rate (per 100k)" = "rate",
-                             "UV Intensity (W/m²)" = "uv",
+                             "UV Intensity (W/m2)" = "uv",
                              "Physician Availability" = "md_availability"
                            ),
                            selected = "count"
@@ -587,9 +663,9 @@ shinyUI(
                            inputId = "bivariate_view",
                            label = NULL,
                            choices = c(
-                             "UV × Melanoma Rate" = "bivariate",
-                             "UV × Melanoma (Risk-Adj)" = "bivariate_weighted",
-                             "MD Access × Melanoma" = "bivariate_md"
+                             "UV x Melanoma Rate" = "bivariate",
+                             "UV x Melanoma (Risk-Adj)" = "bivariate_weighted",
+                             "MD Access x Melanoma" = "bivariate_md"
                            ),
                            selected = character(0)
                          )
@@ -632,7 +708,7 @@ shinyUI(
              Each table is fully interactive - click column headers to sort, use the search box to find specific entries, 
              and download the complete dataset as a CSV file."),
             div(class = "stats-row",
-                span(class = "stat-badge", "4 Datasets"),
+                span(class = "stat-badge", "5 Datasets"),
                 span(class = "stat-badge", "3,000+ Counties"),
                 span(class = "stat-badge", "CSV Downloads")
             )
@@ -668,7 +744,7 @@ shinyUI(
                 )
             ),
             p(class = "description", 
-              "UV radiation intensity (W/m²) by county from the NCI GIS Portal (2020-2024). Higher values indicate greater UV exposure."),
+              "UV radiation intensity (W/m2) by county from the NCI GIS Portal (2020-2024). Higher values indicate greater UV exposure."),
             div(class = "table-container",
                 reactableOutput("uv_table", height = 300)
             )
@@ -707,6 +783,24 @@ shinyUI(
               "Number of physicians (MDs) per 100,000 population by county. Indicates healthcare access and availability."),
             div(class = "table-container",
                 reactableOutput("md_table", height = 300)
+            )
+        ),
+        
+        # Occupation Data Section (NEW from friend)
+        div(class = "data-section",
+            div(class = "data-section-header",
+                div(class = "data-section-title",
+                    h4("Outdoor Occupation Data")
+                ),
+                div(class = "data-section-meta",
+                    span(class = "data-badge", textOutput("occupation_summary", inline = TRUE)),
+                    downloadButton("download_occupation", "Download CSV", class = "download-btn")
+                )
+            ),
+            p(class = "description", 
+              "Percentage of workers in outdoor occupations (farming, construction, etc.) by county. May indicate occupational UV exposure risk."),
+            div(class = "table-container",
+                reactableOutput("occupation_table", height = 300)
             )
         )
       )
@@ -787,7 +881,7 @@ shinyUI(
           HTML("<div class='info-box'>
                 <strong>What is Linear Regression?</strong><br>
                 We're using a mathematical equation to predict melanoma rates based on UV exposure and demographics:<br>
-                <code>Melanoma Rate = β₀ + β₁(UV) + β₂(White%) + error</code><br><br>
+                <code>Melanoma Rate = B0 + B1(UV) + B2(White%) + error</code><br><br>
                 The bars show how much each factor increases melanoma rates. Error bars show uncertainty.</div>")
         ),
         
@@ -807,7 +901,7 @@ shinyUI(
           plotOutput("model_comparison", height = "400px"),
           HTML("<div style='padding: 10px; background: #F5F5F5; border-radius: 5px; margin-top: 15px;'>
                 <strong>Interpretation:</strong> Adding demographics to UV dramatically improves model performance. 
-                The interaction model (UV × Demographics) performs best, suggesting UV effects vary by population composition.</div>")
+                The interaction model (UV x Demographics) performs best, suggesting UV effects vary by population composition.</div>")
         ),
         
         h3("6. Effect Size Analysis", class = "section-header"),
@@ -866,6 +960,55 @@ shinyUI(
         ),
         
         br(), br()
+      )
+    ),
+    
+    # ==================== ABOUT US TAB (NEW from friend) ====================
+    tabPanel(
+      "About Us",
+      fluidPage(
+        style = "padding: 20px 15px;",
+        
+        # Hero banner
+        div(class = "about-hero",
+            h2("About Us")
+        ),
+        
+        # Team photos
+        div(class = "team-container",
+            div(class = "team-member",
+                tags$img(src = "dylan.jpg", alt = "Dylan Reher"),
+                h3("Dylan Reher")
+            ),
+            div(class = "team-member",
+                tags$img(src = "patrick.jpg", alt = "Patrick Murphy"),
+                h3("Patrick Murphy")
+            )
+        ),
+        
+        # Bio sections
+        div(class = "bio-section",
+            h3("Our Story"),
+            p("We are students in BIOL-185 at [Your University]. This project represents our exploration 
+              of the relationship between environmental factors and melanoma incidence across the United States. 
+              Through this dashboard, we aimed to combine our interests in data science, public health, and 
+              biology to create a meaningful visualization tool.")
+        ),
+        
+        div(class = "bio-section",
+            h3("Project Motivation"),
+            p("Melanoma is one of the most preventable yet deadly forms of cancer. We were motivated to explore 
+              how UV exposure, demographics, and healthcare access interact to influence melanoma rates at the 
+              county level. Our goal was to uncover patterns that might inform public health interventions and 
+              highlight the importance of sun safety awareness, particularly in high-risk areas.")
+        ),
+        
+        div(class = "bio-section",
+            h3("Acknowledgments"),
+            p("We would like to thank our BIOL-185 instructor for guidance throughout this project, as well as 
+              the National Cancer Institute and CDC for making their data publicly available. Special thanks to 
+              the R and Shiny communities for the excellent tools that made this dashboard possible.")
+        )
       )
     )
   )
