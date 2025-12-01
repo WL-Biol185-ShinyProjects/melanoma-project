@@ -992,7 +992,8 @@ shinyUI(
             p("We are students in BIOL-185 at Washington and Lee University. This project represents our exploration 
               of the relationship between environmental factors and melanoma incidence across the United States. 
               Through this dashboard, we aimed to combine our interests in data science, public health, and 
-              biology to create a meaningful visualization tool.")
+              biology to create a meaningful visualization tool. Not only did we learn the fundamentals of coding and data wrangling,
+              we applied them to a real-world situation to meaningfully draw conclusions from an area we are interested in")
         ),
         
         div(class = "bio-section",
@@ -1007,7 +1008,8 @@ shinyUI(
             h3("Acknowledgments"),
             p("We would like to thank our BIOL-185 instructor for guidance throughout this project, as well as 
               the National Cancer Institute and CDC for making their data publicly available. Special thanks to 
-              the R and Shiny communities for the excellent tools that made this dashboard possible.")
+              the R and Shiny communities for the excellent tools that made this dashboard possible. We created this code 
+              in conjunction with Claude and ChatGPT, which served to help us primarily review and polish our project.")
         )
       )
     )
