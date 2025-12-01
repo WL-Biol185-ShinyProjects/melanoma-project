@@ -633,6 +633,32 @@ shinyUI(
                        width = "100%"
                      ),
                      
+                     # County search box
+                     div(class = "section-divider", style = "margin: 20px 0;"),
+                     
+                     div(class = "section-title",
+                         "Find County"
+                     ),
+                     tags$p(
+                       style = "color: #777; font-size: 10px; margin: 5px 0 10px 0; line-height: 1.4;",
+                       tags$strong("Note:"), " Select your state first to ensure accuracy in locating the county."
+                     ),
+                     tags$div(
+                       style = "position: relative;",
+                       textInput(
+                         inputId = "county_search",
+                         label = NULL,
+                         placeholder = "Type county name and press Enter...",
+                         width = "100%"
+                       ),
+                       tags$small(
+                         style = "color: #777; font-size: 11px; display: block; margin-top: 5px;",
+                         "Example: 'Rockbridge' or 'Los Angeles'"
+                       )
+                     ),
+                     
+                     div(class = "section-divider"),
+                     
                      div(class = "section-divider"),
                      
                      # Data layers

@@ -41,22 +41,38 @@ Contact Information
 
 INSTALLATION INSTRUCTIONS AND VERSION HISTORY:
 
-Beta v0.6.1 (unreleased) - fixed Connecticut mapping so that data populates 
-  correctly, manually fixed counties in Virginia and other states to ensure the 
-  visualization mapping is correct.
+Beta v1.0.0 (official release) - this is the first public release of our app
+  which includes 5 fully-functional and interactive pages. There are no known
+  bugs with this app on December 01, 2025.
   
   --
   
 Previous versions:
-v0.6.0 - added all the remaining tables in the data explorer tab, and added 
-  download buttons to the tables. Also removed unnecessary options that the 
-  user would never intend to select on the visualizations page. Also fixed 
-  zoom issues for several states including Michigan.
-v0.5.2 - Added "Data explorer tabs" and Streamlined Bivarate Data to correct 
-  critical logical errors 
-v0.5.1 - Modified Bivarate Data to correct logical errors 
-v0.5.0 - Added Bivarate Data to visualize "Risk-Adjusted: UV x Melanoma (White 
-  Pop Weighted)"
+v0.8.0 - 12/1/2025 - Major refinements to UI on all 5 pages of the app, updated 
+  About Us page, and added a search box to find a user-typed county within the 
+  selected state
+v0.7.3 - 11/26/2025 - fixed an error that caused the app to crash if the user 
+  inputs changed too rapidly
+v0.7.2 - 11/25/2025 minor changes to UI and further refinement of statistical 
+  analysis and data explorer pages
+v0.7.1 - 11/20/2025 - Modified the Data Analysis page to include UI changes, 
+  highlight specific graphs and charts, and updated the data explorer page with 
+  new data
+v0.7.0 - 11/10/2025 - Added the Statistical analysis page and "About Us Page" 
+  and also included a bivarate and standard visualization for physician 
+  availability
+v0.6.1 - 10/29/2025 - fixed Connecticut mapping so that data populates 
+  correctly, manually fixed counties in Virginia and other states to ensure the 
+  visualization mapping is correct.
+v0.6.0 - 10/27/2025 - added all the remaining tables in the data explorer tab, 
+  and added download buttons to the tables. Also removed unnecessary options 
+  that the user would never intend to select on the visualizations page. Also 
+  fixed zoom issues for several states including Michigan.
+v0.5.2 - 10/26/2025 - Added "Data explorer tabs" and Streamlined Bivarate Data 
+to correct critical logical errors 
+v0.5.1 - 10/22/2025 - Modified Bivarate Data to correct logical errors 
+v0.5.0 - 10/20/2025 - Added Bivarate Data to visualize "Risk-Adjusted: UV x 
+  Melanoma (White Pop Weighted)"
 v0.4.1 - Corrected color scheming to make a visually appealing and informative 
   color scheme
 v0.4.0 - Added an option to visualize "Bivarate UV Measurement x Melanoma 
@@ -145,13 +161,19 @@ https://gis.cancer.gov/tools/uv-exposure/uv-county.xlsx
 3. County Demographics - Corgis-edu.github.io
 https://corgis-edu.github.io/corgis/datasets/csv/county_demographics/county_demographics.csv 
 
+4. Occupational Data - Censusus.gov
+https://data.census.gov/chart/ACSST5Y2021.S2401?q=occupation+by+county 
+
+5. Physician Availability Data - HRSA.gov - Health Resources and Services Administration
+https://data.hrsa.gov/topics/health-workforce/nchwa/ahrf 
+
 --
 
-CONTACT INFORMATION:
+CONTACT/COPYRIGHT INFORMATION:
 
 (C) Patrick Murphy and Dylan Reher, 2025
-Patrick Murphy: pmurphy@mail.wlu.edu
-Dylan Reher: dreher@mail.wlu.edu
+FOR DIRECT CONTACT, PLEASE USE THE GITHUB DIRECT MESSAGE FUNCTION.
+
 
 
 

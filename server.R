@@ -96,6 +96,93 @@ shinyServer(function(input, output, session) {
   })
   
   # ============================================================================
+  # COUNTY SEARCH FUNCTIONALITY
+  # ============================================================================
+  
+  # Reactive value to store selected county FIPS
+  selected_county_fips <- reactiveVal(NULL)
+  
+  # Observer for county search
+  observeEvent(input$county_search, {
+    req(input$state_select, input$county_search)
+    
+    # Only trigger when user actually types something
+    if (nchar(trimws(input$county_search)) == 0) {
+      selected_county_fips(NULL)
+      return()
+    }
+    
+    # Get state abbreviation
+    state_abbr <- state.abb[match(input$state_select, state.name)]
+    if (is.na(state_abbr) && input$state_select == "District of Columbia") {
+      state_abbr <- "DC"
+    }
+    
+    # Search for the county in the selected state
+    search_term <- tolower(trimws(input$county_search))
+    
+    # Get counties for this state
+    state_counties <- counties_sf[counties_sf$STUSPS == state_abbr, ]
+    
+    # Find matching county (case-insensitive, partial match)
+    matches <- state_counties[grepl(search_term, tolower(state_counties$NAME)), ]
+    
+    if (nrow(matches) > 0) {
+      # Take the first match
+      matched_fips <- matches$GEOID[1]
+      matched_name <- matches$NAME[1]
+      
+      selected_county_fips(matched_fips)
+      
+      # Show success notification
+      showNotification(
+        paste0("Found: ", matched_name, " County"),
+        type = "message",
+        duration = 3
+      )
+      
+      # Zoom to the county
+      county_bbox <- sf::st_bbox(matches[1, ])
+      
+      leafletProxy("map") %>%
+        clearGroup("county_highlight") %>%
+        addPolygons(
+          data = matches[1, ],
+          fillColor = "transparent",
+          color = "#1E3A8A",
+          weight = 4,
+          opacity = 1,
+          fillOpacity = 0,
+          group = "county_highlight"
+        ) %>%
+        fitBounds(
+          lng1 = county_bbox[["xmin"]],
+          lat1 = county_bbox[["ymin"]],
+          lng2 = county_bbox[["xmax"]],
+          lat2 = county_bbox[["ymax"]]
+        )
+      
+    } else {
+      selected_county_fips(NULL)
+      showNotification(
+        paste0("County '", input$county_search, "' not found in ", input$state_select),
+        type = "warning",
+        duration = 3
+      )
+    }
+  }, ignoreInit = TRUE)
+  
+  # Clear search when state changes
+  observeEvent(input$state_select, {
+    updateTextInput(session, "county_search", value = "")
+    selected_county_fips(NULL)
+    
+    # Clear the highlight
+    leafletProxy("map") %>%
+      clearGroup("county_highlight")
+  }, ignoreInit = TRUE)
+  
+  # ============================================================================
   # BIVARIATE COLOR FUNCTIONS (using US-wide breaks from global.R)
   # ============================================================================
   
