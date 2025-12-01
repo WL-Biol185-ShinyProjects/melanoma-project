@@ -97,8 +97,9 @@ v0.1.0 - Website frame created with three tabs - home, visualizations, data
   explorer, completed data cleanup and proper cleaning of tables, 
   
 This code has been tested to run without knowledgeable error on R v4.4.2 on 
-November 10th, 2025. Newer versions of R are NOT TESTED and not recommended for 
-this program. To ensure full feature availability, please use this version of R.
+December 1st, 2025. Newer versions of R are NOT TESTED and not recommended for 
+this program. To ensure full feature availability and functionality without
+error, please use this version of R.
 
 This code requires the following open-source packages to be installed alongside 
 this code in R:
@@ -113,6 +114,9 @@ this code in R:
 - dplyr
 - tigris
 - sf
+- DT
+- plotly
+
 
 Please ensure that these packages are correctly installed in your R environment. 
 
