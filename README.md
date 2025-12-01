@@ -89,7 +89,7 @@ v0.2.3 - Modified the color scheme to make data visualization clarity better
 v0.2.2 - Modified the data cleanup file to further clean our data and make it 
   easier to map and read across multiple tables
 v0.2.1 - Corrected Melanoma visualization to show empty data and missing 
-  couinties.
+  counties.
 v0.2.0 - Mapped Melanoma by County on the leaflet map
 v0.1.1 - Added an interactive data table and interactive zoomable leaflet map 
   with no other features
