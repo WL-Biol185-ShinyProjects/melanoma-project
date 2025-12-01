@@ -137,7 +137,6 @@ shinyUI(
       .viz-sidebar label:has(input:checked) {
         background-color: ", light_blue, ";
         border-color: ", royal_blue, ";
-        border-left: 3px solid ", royal_blue, ";
       }
       
       /* Select input styling */
