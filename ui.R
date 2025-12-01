@@ -1007,7 +1007,9 @@ shinyUI(
             h3("Acknowledgments"),
             p("We would like to thank our BIOL-185 instructor for guidance throughout this project, as well as 
               the National Cancer Institute and CDC for making their data publicly available. Special thanks to 
-              the R and Shiny communities for the excellent tools that made this dashboard possible.")
+              the R and Shiny communities for the excellent tools that made this dashboard possible. We would like 
+              to acknowledge our usage of AI resources in making this project and thank Claude for coding assistance 
+              in making this website.")
         )
       )
     )
