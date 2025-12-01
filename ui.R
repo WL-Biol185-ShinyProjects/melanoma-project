@@ -632,6 +632,32 @@ shinyUI(
                        width = "100%"
                      ),
                      
+                     # County search box
+                     div(class = "section-divider", style = "margin: 20px 0;"),
+                     
+                     div(class = "section-title",
+                         "Find County"
+                     ),
+                     tags$p(
+                       style = "color: #777; font-size: 10px; margin: 5px 0 10px 0; line-height: 1.4;",
+                       tags$strong("Note:"), " Select your state first to ensure accuracy in locating the county."
+                     ),
+                     tags$div(
+                       style = "position: relative;",
+                       textInput(
+                         inputId = "county_search",
+                         label = NULL,
+                         placeholder = "Type county name and press Enter...",
+                         width = "100%"
+                       ),
+                       tags$small(
+                         style = "color: #777; font-size: 11px; display: block; margin-top: 5px;",
+                         "Example: 'Rockbridge' or 'Los Angeles'"
+                       )
+                     ),
+                     
+                     div(class = "section-divider"),
+                     
                      div(class = "section-divider"),
                      
                      # Data layers
@@ -991,7 +1017,8 @@ shinyUI(
             p("We are students in BIOL-185 at Washington and Lee University. This project represents our exploration 
               of the relationship between environmental factors and melanoma incidence across the United States. 
               Through this dashboard, we aimed to combine our interests in data science, public health, and 
-              biology to create a meaningful visualization tool.")
+              biology to create a meaningful visualization tool. Not only did we learn the fundamentals of coding and data wrangling,
+              we applied them to a real-world situation to meaningfully draw conclusions from an area we are interested in.")
         ),
         
         div(class = "bio-section",
@@ -1006,9 +1033,8 @@ shinyUI(
             h3("Acknowledgments"),
             p("We would like to thank our BIOL-185 instructor for guidance throughout this project, as well as 
               the National Cancer Institute and CDC for making their data publicly available. Special thanks to 
-              the R and Shiny communities for the excellent tools that made this dashboard possible. We would like 
-              to acknowledge our usage of AI resources in making this project and thank Claude for coding assistance 
-              in making this website.")
+              the R and Shiny communities for the excellent tools that made this dashboard possible. We created this code 
+              in conjunction with Claude and ChatGPT, which served to help us primarily review and polish our project.")
         )
       )
     )
