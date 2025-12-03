@@ -22,7 +22,8 @@ shinyUI(
     id = "main_navbar",
     inverse = TRUE,
     
-    header = tags$style(HTML(paste0("
+    header = tagList(
+      tags$style(HTML(paste0("
       /* ========== NAVBAR STYLING ========== */
       .navbar {
         background-color: ", royal_blue, ";
@@ -99,29 +100,49 @@ shinyUI(
         padding-left: 2px;
       }
       
-      /* Radio button styling */
+      /* ========== RADIO BUTTON STYLING - FULL WIDTH FIX ========== */
+      .viz-sidebar .shiny-input-radiogroup {
+        width: 100%;
+      }
+      
+      .viz-sidebar .shiny-options-group {
+        width: 100%;
+      }
+      
       .viz-sidebar .radio {
-        margin: 0;
+        margin: 0 !important;
+        padding: 0;
+        width: 100%;
+      }
+      
+      .viz-sidebar .radio + .radio {
+        margin-top: 4px !important;
       }
       
       .viz-sidebar .radio label {
-        padding: 10px 14px;
-        margin: 3px 0;
-        border-radius: 8px;
-        display: flex;
+        display: flex !important;
         align-items: center;
+        width: 100%;
+        padding: 12px 14px;
+        margin: 0;
+        border-radius: 8px;
         cursor: pointer;
         font-weight: 400;
         font-size: 14px;
         color: #444;
         transition: all 0.15s ease;
         border: 1px solid transparent;
+        background-color: transparent;
+        box-sizing: border-box;
+        min-height: 44px;
       }
       
       .viz-sidebar .radio label input[type='radio'] {
-        margin-right: 10px;
-        margin-top: 0;
+        position: relative !important;
+        margin: 0 10px 0 0 !important;
         flex-shrink: 0;
+        width: 16px;
+        height: 16px;
       }
       
       .viz-sidebar .radio label:hover {
@@ -129,15 +150,19 @@ shinyUI(
         border-color: #c8d4e8;
       }
       
-      .viz-sidebar .radio input[type='radio']:checked + span {
-        font-weight: 600;
-        color: ", royal_blue, ";
+      /* Checked state - using class added by JavaScript for full browser support */
+      .viz-sidebar .radio.radio-selected label {
+        background-color: ", light_blue, " !important;
+        border-color: ", royal_blue, " !important;
       }
       
-      .viz-sidebar label:has(input:checked) {
-        background-color: ", light_blue, ";
-        border-color: ", royal_blue, ";
+      .viz-sidebar .radio.radio-selected label,
+      .viz-sidebar .radio.radio-selected label span {
+        font-weight: 600 !important;
+        color: ", royal_blue, " !important;
       }
+      
+      /* ========== END RADIO BUTTON STYLING ========== */
       
       /* Select input styling */
       .viz-sidebar .selectize-input {
@@ -521,6 +546,40 @@ shinyUI(
         margin: 0;
       }
     "))),
+      
+      # JavaScript for radio button selection highlighting
+      tags$script(HTML("
+        $(document).ready(function() {
+          // Function to update radio button selection styling
+          function updateRadioSelection() {
+            $('.viz-sidebar .shiny-input-radiogroup').each(function() {
+              $(this).find('.radio').removeClass('radio-selected');
+              $(this).find('input:checked').closest('.radio').addClass('radio-selected');
+            });
+          }
+          
+          // Run on page load
+          updateRadioSelection();
+          
+          // Run when any radio button changes
+          $(document).on('change', '.viz-sidebar input[type=\"radio\"]', function() {
+            updateRadioSelection();
+          });
+          
+          // Also listen for Shiny input changes
+          $(document).on('shiny:inputchanged', function(event) {
+            if (event.name === 'melanoma_view' || event.name === 'bivariate_view') {
+              setTimeout(updateRadioSelection, 10);
+            }
+          });
+          
+          // Run after Shiny connects
+          $(document).on('shiny:connected', function() {
+            setTimeout(updateRadioSelection, 100);
+          });
+        });
+      "))
+    ),
     
     # ==================== HOME TAB ====================
     tabPanel(
@@ -631,32 +690,6 @@ shinyUI(
                        selected = "Alabama",
                        width = "100%"
                      ),
-                     
-                     # County search box
-                     div(class = "section-divider", style = "margin: 20px 0;"),
-                     
-                     div(class = "section-title",
-                         "Find County"
-                     ),
-                     tags$p(
-                       style = "color: #777; font-size: 10px; margin: 5px 0 10px 0; line-height: 1.4;",
-                       tags$strong("Note:"), " Select your state first to ensure accuracy in locating the county."
-                     ),
-                     tags$div(
-                       style = "position: relative;",
-                       textInput(
-                         inputId = "county_search",
-                         label = NULL,
-                         placeholder = "Type county name and press Enter...",
-                         width = "100%"
-                       ),
-                       tags$small(
-                         style = "color: #777; font-size: 11px; display: block; margin-top: 5px;",
-                         "Example: 'Rockbridge' or 'Los Angeles'"
-                       )
-                     ),
-                     
-                     div(class = "section-divider"),
                      
                      div(class = "section-divider"),
                      
@@ -811,7 +844,7 @@ shinyUI(
             )
         ),
         
-        # Occupation Data Section (NEW from friend)
+        # Occupation Data Section
         div(class = "data-section",
             div(class = "data-section-header",
                 div(class = "data-section-title",
@@ -988,7 +1021,7 @@ shinyUI(
       )
     ),
     
-    # ==================== ABOUT US TAB (NEW from friend) ====================
+    # ==================== ABOUT US TAB ====================
     tabPanel(
       "About Us",
       fluidPage(

@@ -39,150 +39,6 @@ shinyServer(function(input, output, session) {
   })
   
   # ============================================================================
-  # STATE QUICK STATS (for sidebar)
-  # ============================================================================
-  
-  output$state_quick_stats <- renderUI({
-    req(input$state_select)
-    
-    # Get state abbreviation
-    state_abbr <- state.abb[match(input$state_select, state.name)]
-    if (is.na(state_abbr) && input$state_select == "District of Columbia") {
-      state_abbr <- "DC"
-    }
-    
-    # Get state data
-    state_data <- melanoma_table %>%
-      filter(state == input$state_select | grepl(state_abbr, state, ignore.case = TRUE))
-    
-    # Calculate stats
-    total_cases <- sum(state_data$avg_annual_ct, na.rm = TRUE)
-    avg_rate <- mean(state_data$age_adj_inc_rate, na.rm = TRUE)
-    num_counties <- nrow(state_data)
-    
-    # Get UV data for the state
-    state_fips <- unique(state_data$fips_melanoma)
-    state_uv <- uv_table %>%
-      mutate(fips_uv = sprintf("%05d", as.numeric(fips_uv))) %>%
-      filter(fips_uv %in% state_fips)
-    avg_uv <- mean(state_uv$uv_value, na.rm = TRUE)
-    
-    tagList(
-      div(
-        class = "state-badge",
-        HTML(paste0(input$state_select))
-      ),
-      div(
-        class = "quick-stats",
-        div(
-          class = "quick-stat-item",
-          div(class = "quick-stat-value", 
-              ifelse(is.na(total_cases) | total_cases == 0, "N/A", format(round(total_cases), big.mark = ","))),
-          div(class = "quick-stat-label", "Annual Cases")
-        ),
-        div(
-          class = "quick-stat-item",
-          div(class = "quick-stat-value", 
-              ifelse(is.na(avg_rate), "N/A", round(avg_rate, 1))),
-          div(class = "quick-stat-label", "Avg Rate/100k")
-        ),
-        div(
-          class = "quick-stat-item",
-          div(class = "quick-stat-value", num_counties),
-          div(class = "quick-stat-label", "Counties")
-        )
-      )
-    )
-  })
-  
-  # ============================================================================
-  # COUNTY SEARCH FUNCTIONALITY
-  # ============================================================================
-  
-  # Reactive value to store selected county FIPS
-  selected_county_fips <- reactiveVal(NULL)
-  
-  # Observer for county search
-  observeEvent(input$county_search, {
-    req(input$state_select, input$county_search)
-    
-    # Only trigger when user actually types something
-    if (nchar(trimws(input$county_search)) == 0) {
-      selected_county_fips(NULL)
-      return()
-    }
-    
-    # Get state abbreviation
-    state_abbr <- state.abb[match(input$state_select, state.name)]
-    if (is.na(state_abbr) && input$state_select == "District of Columbia") {
-      state_abbr <- "DC"
-    }
-    
-    # Search for the county in the selected state
-    search_term <- tolower(trimws(input$county_search))
-    
-    # Get counties for this state
-    state_counties <- counties_sf[counties_sf$STUSPS == state_abbr, ]
-    
-    # Find matching county (case-insensitive, partial match)
-    matches <- state_counties[grepl(search_term, tolower(state_counties$NAME)), ]
-    
-    if (nrow(matches) > 0) {
-      # Take the first match
-      matched_fips <- matches$GEOID[1]
-      matched_name <- matches$NAME[1]
-      
-      selected_county_fips(matched_fips)
-      
-      # Show success notification
-      showNotification(
-        paste0("Found: ", matched_name, " County"),
-        type = "message",
-        duration = 3
-      )
-      
-      # Zoom to the county
-      county_bbox <- sf::st_bbox(matches[1, ])
-      
-      leafletProxy("map") %>%
-        clearGroup("county_highlight") %>%
-        addPolygons(
-          data = matches[1, ],
-          fillColor = "transparent",
-          color = "#1E3A8A",
-          weight = 4,
-          opacity = 1,
-          fillOpacity = 0,
-          group = "county_highlight"
-        ) %>%
-        fitBounds(
-          lng1 = county_bbox[["xmin"]],
-          lat1 = county_bbox[["ymin"]],
-          lng2 = county_bbox[["xmax"]],
-          lat2 = county_bbox[["ymax"]]
-        )
-      
-    } else {
-      selected_county_fips(NULL)
-      showNotification(
-        paste0("County '", input$county_search, "' not found in ", input$state_select),
-        type = "warning",
-        duration = 3
-      )
-    }
-  }, ignoreInit = TRUE)
-  
-  # Clear search when state changes
-  observeEvent(input$state_select, {
-    updateTextInput(session, "county_search", value = "")
-    selected_county_fips(NULL)
-    
-    # Clear the highlight
-    leafletProxy("map") %>%
-      clearGroup("county_highlight")
-  }, ignoreInit = TRUE)
-  
-  # ============================================================================
   # BIVARIATE COLOR FUNCTIONS (using US-wide breaks from global.R)
   # ============================================================================
   
@@ -881,10 +737,7 @@ shinyServer(function(input, output, session) {
         )
     }
     
-  } # End of specific state view
-  
-  
-  ) # End of observe block
+  }) # End of observe block
   
   # ============================================================================
   # DATA EXPLORER TAB
@@ -1044,7 +897,7 @@ shinyServer(function(input, output, session) {
     }
   )
   
-  # Occupation data table (NEW from friend)
+  # Occupation data table
   output$occupation_table <- renderReactable({
     req(occupation_data)
     display_data <- occupation_data
@@ -1153,7 +1006,7 @@ shinyServer(function(input, output, session) {
       "<b>", data$county, ", ", data$state, "</b><br>",
       "UV: ", round(data$uv_value), " W/m2<br>",
       "Melanoma: ", round(data$age_adj_inc_rate, 1), " per 100k<br>",
-      "White Pop: ", round(data$white_not_h_or_l_pct, 1), "%"
+      "White (Non-Hispanic): ", round(data$white_not_h_or_l_pct, 1), "%"
     )
     
     p <- plot_ly(data, 
@@ -1163,10 +1016,10 @@ shinyServer(function(input, output, session) {
                  colors = c("#440154", "#31688E", "#35B779", "#FDE725"),
                  type = 'scatter',
                  mode = 'markers',
-                 marker = list(size = 8, opacity = 0.6,
-                               colorbar = list(title = "White<br>Pop %")),
+                 marker = list(size = 8, opacity = 0.6),
                  text = ~hover_text,
                  hovertemplate = '%{text}<extra></extra>') %>%
+      colorbar(title = "White Non-Hispanic<br>or Latino (%)") %>%
       layout(
         title = list(text = "<b>UV Exposure vs Melanoma Rate</b>", font = list(size = 18)),
         xaxis = list(title = "UV Intensity (W/m2)"),
@@ -1462,44 +1315,44 @@ shinyServer(function(input, output, session) {
     m <- lm(age_adj_inc_rate ~ uv_value + white_not_h_or_l_pct, data = data)
     
     # Create diagnostic plots with better labels
-    par(mfrow = c(2, 2), mar = c(4, 4, 3, 2))
+    par(mfrow = c(2, 2), mar = c(5, 4, 4, 2))
     
     # 1. Residuals vs Fitted
     plot(fitted(m), residuals(m), 
-         main = "1. Linearity Check",
+         main = "1. Linearity Check\n(Should be scattered around red line)",
          xlab = "Predicted Values", 
          ylab = "Residuals (Prediction Errors)",
-         pch = 20, col = alpha("#2166AC", 0.5))
+         pch = 20, col = alpha("#2166AC", 0.5),
+         cex.main = 1.1)
     abline(h = 0, lty = 2, col = "red", lwd = 2)
     lines(lowess(fitted(m), residuals(m)), col = "red", lwd = 2)
-    mtext("Should be scattered around red line", cex = 0.8, line = 0.5)
     
     # 2. Q-Q Plot
-    qqnorm(residuals(m), main = "2. Normality Check",
+    qqnorm(residuals(m), main = "2. Normality Check\n(Points should follow red line)",
            pch = 20, col = alpha("#2166AC", 0.5),
-           xlab = "Theoretical Normal", ylab = "Sample Residuals")
+           xlab = "Theoretical Normal", ylab = "Sample Residuals",
+           cex.main = 1.1)
     qqline(residuals(m), col = "red", lwd = 2)
-    mtext("Points should follow red line", cex = 0.8, line = 0.5)
     
     # 3. Scale-Location
     plot(fitted(m), sqrt(abs(standardize(residuals(m)))), 
-         main = "3. Equal Variance Check",
+         main = "3. Equal Variance Check\n(Red line should be horizontal)",
          xlab = "Predicted Values", 
          ylab = "Sqrt|Standardized Residuals|",
-         pch = 20, col = alpha("#2166AC", 0.5))
+         pch = 20, col = alpha("#2166AC", 0.5),
+         cex.main = 1.1)
     lines(lowess(fitted(m), sqrt(abs(standardize(residuals(m))))), 
           col = "red", lwd = 2)
-    mtext("Red line should be horizontal", cex = 0.8, line = 0.5)
     
     # 4. Influential Points
     cooksd <- cooks.distance(m)
     plot(cooksd, 
-         main = "4. Influential Counties",
+         main = "4. Influential Counties\n(Red bars = potentially influential)",
          xlab = "County Index", 
          ylab = "Cook's Distance",
-         type = "h", col = ifelse(cooksd > 4/nrow(data), "red", "gray50"))
+         type = "h", col = ifelse(cooksd > 4/nrow(data), "red", "gray50"),
+         cex.main = 1.1)
     abline(h = 4/nrow(data), lty = 2, col = "red")
-    mtext("Red bars = potentially influential", cex = 0.8, line = 0.5)
     
     par(mfrow = c(1, 1))
   }, height = 600)
